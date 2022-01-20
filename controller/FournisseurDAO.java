@@ -17,10 +17,14 @@ public class FournisseurDAO
 		fournisseur.setAdresse(adresse);
 		fournisseur.setVille(ville);
 		
-		for(Produit produit : listeProduitsFournis)
-			fournisseur.addProduit(produit);
-						
 		em.getTransaction().begin();
+		
+		for(Produit produit : listeProduitsFournis) {
+			fournisseur.addProduit(produit);
+			produit.setFournisseur(fournisseur);
+			em.persist(produit);
+		}
+						
 		em.persist(fournisseur);
 		em.getTransaction().commit();
 		

@@ -92,6 +92,16 @@ public class Produit
 		this.quantiteDispo = quantiteDispo;
 	}
 	
+	public void setFournisseur(Fournisseur fournisseur)
+	{
+		this.fournisseur = fournisseur;
+	}
+	
+	public void setFourniture(Fourniture fourniture)
+	{
+		this.fourniture = fourniture;
+	}
+	
 	public void afficherProduit()
 	{
 		System.out.println("ID : " + id + ", nom : " + nom + ", categorie : " + categorie + ", espèce : " + espece + ", prix unitaire : " + prixUnitaire + ", quantité disponible : " + quantiteDispo);

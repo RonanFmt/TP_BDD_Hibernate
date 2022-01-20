@@ -37,4 +37,9 @@ public class Fournisseur extends Personne
 	{
 		return fourniture;
 	}
+	
+	public void setFourniture(Fourniture fourniture)
+	{
+		this.fourniture = fourniture;
+	}
 }
