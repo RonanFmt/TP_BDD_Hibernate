@@ -19,7 +19,9 @@ import model.Produit;
 
 
 public class Application 
-{		
+{	
+	static private double TVA = 1.15;
+	
 	@SuppressWarnings("resource")
 	static public void main(String args[]) 
 	{
@@ -74,21 +76,21 @@ public class Application
 			else {
 				System.out.print("Choisir la quantité pour le produit : ");
 				int quantite = scanner.nextInt();
+				
 				if (!ProduitDAO.checkQuantiteDispo(em, id, quantite)) {
 					System.out.println("Quantité insuffisante.");
 					System.exit(1);
 				}
+				
 				ProduitDAO.updateQuantiteDispo(em, id, quantite);
 				Produit prod = ProduitDAO.getProduitByID(em, id);
 				
-				if (prod.getFournisseur().getId() == f1.getId())
-				{
+				if (prod.getFournisseur().getId() == f1.getId()) {
 					factureF1 += prod.getPrixUnitaire() * quantite;
 					listeProduitsAchetesF1.add(prod);
 				}
-				else if (prod.getFournisseur().getId() == f2.getId())
-				{
-					factureF2 += prod.getPrixUnitaire() * quantite;
+				else if (prod.getFournisseur().getId() == f2.getId()) {
+					factureF2 += prod.getPrixUnitaire() * quantite * TVA;
 					listeProduitsAchetesF1.add(prod);
 				}
 				
@@ -106,6 +108,8 @@ public class Application
 		
 		double prixTotal = factureF1 + factureF2;
 		System.out.println("\nLe prix de la commande s'élève à " + prixTotal + " euros.");
+		
+		// client, produit, quantite demandée, 
 		
 		em.close();
 		emf.close();
