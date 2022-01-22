@@ -1,13 +1,16 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import controller.AchatDAO;
 import controller.ClientDAO;
 import controller.FournisseurDAO;
 import controller.FournitureDAO;
@@ -28,16 +31,14 @@ public class Application
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("tp_bdd_hibernate");
 		EntityManager em = emf.createEntityManager();
 		
-		Client c1 = ClientDAO.createClient(em, "nom1", "prenom1", "adresse1", "ville1", 20);
-		// Client c2 = ClientDAO.createClient(em, "nom2", "prenom2", "adresse2", "ville2", 30);
-		// Client c3 = ClientDAO.createClient(em, "nom3", "prenom3", "adresse3", "ville3", 25);
+		Client c1 = ClientDAO.createClient(em, "Martin", "Jean", "64 avenue Jean Portalis", "Tours", 20);
 		
-		Produit p1 = ProduitDAO.createProduit(em, "nom1", "fleur", "espece1", 3.56, 10);
-		Produit p2 = ProduitDAO.createProduit(em, "nom2", "fleur", "espece2", 2.86, 36);
-		Produit p3 = ProduitDAO.createProduit(em, "nom3", "plante", "espece3", 4.52, 50);
-		Produit p4 = ProduitDAO.createProduit(em, "nom4", "plante", "espece4", 1.25, 20);
-		Produit p5 = ProduitDAO.createProduit(em, "nom5", "fleur", "espece5", 7.41, 8);
-		Produit p6 = ProduitDAO.createProduit(em, "nom6", "fleur", "espece6", 5.12, 13);
+		Produit p1 = ProduitDAO.createProduit(em, "Acanthe epineuse", "fleur", "Acanthacees", 3.56, 10);
+		Produit p2 = ProduitDAO.createProduit(em, "Callune", "fleur", "Ericacees", 2.86, 36);
+		Produit p3 = ProduitDAO.createProduit(em, "Abricotier", "plante", "Prunus", 4.52, 50);
+		Produit p4 = ProduitDAO.createProduit(em, "Chene", "plante", "Fagacees", 1.25, 20);
+		Produit p5 = ProduitDAO.createProduit(em, "Euphorbe d'Irlande", "fleur", "Euphorbiacees", 7.41, 8);
+		Produit p6 = ProduitDAO.createProduit(em, "Joubarbe", "fleur", "Crassulacees", 5.12, 13);
 		
 		List<Produit> listeProduitsFournis1 = new ArrayList<Produit>();
 		listeProduitsFournis1.add(p1);
@@ -49,10 +50,10 @@ public class Application
 		listeProduitsFournis2.add(p5);
 		listeProduitsFournis2.add(p6);
 		
-		Fournisseur f1 = FournisseurDAO.createFournisseur(em, "nom1", "prenom1", "adresse1", "ville1", listeProduitsFournis1);
-		Fournisseur f2 = FournisseurDAO.createFournisseur(em, "nom2", "prenom2", "adresse2", "ville2", listeProduitsFournis2);
+		Fournisseur f1 = FournisseurDAO.createFournisseur(em, "Bernard", "Francois", "5316 avenue du parc", "Montreal", listeProduitsFournis1);
+		Fournisseur f2 = FournisseurDAO.createFournisseur(em, "Thomas", "Benoit", "155 boulevard Rene Levesque E.", "Montreal", listeProduitsFournis2);
 		
-		System.out.println("Produits du fournisseur ID n°" + f1.getId() + " (" + f1.getPrenom() + " " + f1.getNom() + ") : ");
+		System.out.println("\nProduits du fournisseur ID n°" + f1.getId() + " (" + f1.getPrenom() + " " + f1.getNom() + ") : ");
 		for (Produit prod : f1.getListeProduits())
 			prod.afficherProduit();
 		
@@ -94,7 +95,7 @@ public class Application
 					listeProduitsAchetesF1.add(prod);
 				}
 				
-				prod.afficherProduit();
+				AchatDAO.createAchat(em, c1, prod, quantite);
 			}
 		}
 		
@@ -103,13 +104,16 @@ public class Application
 		
 		Fourniture fourniture1 = FournitureDAO.createFourniture(em, factureF1, listeProduitsAchetesF1, f1);
 		Fourniture fourniture2 = FournitureDAO.createFourniture(em, factureF2, listeProduitsAchetesF2, f2);
-		System.out.println("\n" + fourniture1.getFacture() + " euros achetés chez le fournisseur n°" + fourniture1.getFournisseur().getId() + ".");
-		System.out.println(fourniture2.getFacture() + " euros achetés chez le fournisseur n°" + fourniture2.getFournisseur().getId() + ".");
+		System.out.println("\n" + fourniture1.getFacture() + " euros achetés chez le fournisseur ID n°" + fourniture1.getFournisseur().getId() + ".");
+		System.out.println(fourniture2.getFacture() + " euros achetés chez le fournisseur ID n°" + fourniture2.getFournisseur().getId() + ".");
+				
+		System.out.println("\nCommande du client " + c1.getPrenom() + " " + c1.getNom() + " (ID n°" + c1.getId() + ") :");
+		HashMap<Produit, Integer> produitsClient1 = AchatDAO.getProduitsParClient(em, c1);
+		for (Map.Entry<Produit, Integer> entry : produitsClient1.entrySet())
+			System.out.println("Produit : " + entry.getKey().getNom() + " -> quantite demandée : " + entry.getValue());
 		
 		double prixTotal = factureF1 + factureF2;
 		System.out.println("\nLe prix de la commande s'élève à " + prixTotal + " euros.");
-		
-		// client, produit, quantite demandée, 
 		
 		em.close();
 		emf.close();

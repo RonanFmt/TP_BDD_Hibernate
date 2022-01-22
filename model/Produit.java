@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 
 @Entity
@@ -26,6 +27,9 @@ public class Produit
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	private Fourniture fourniture;
+	
+	@OneToOne(cascade=CascadeType.ALL, mappedBy="produit")
+	private Achat achat;
 	
 	public int getId()
 	{
@@ -67,6 +71,11 @@ public class Produit
 		return fourniture;
 	}
 	
+	public Achat getAchat()
+	{
+		return achat;
+	}
+	
 	public void setNom(String nom)
 	{
 		this.nom = nom;
@@ -100,6 +109,11 @@ public class Produit
 	public void setFourniture(Fourniture fourniture)
 	{
 		this.fourniture = fourniture;
+	}
+	
+	public void setAchat(Achat achat)
+	{
+		this.achat = achat;
 	}
 	
 	public void afficherProduit()
